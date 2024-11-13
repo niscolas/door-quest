@@ -1,0 +1,10 @@
+/.git
+/Content
+/.direnv
+/.devenv
+/.cache
+/.vscode
+/devenv-custom
+/DerivedDataCache
+/Intermediate
+/Saved
