@@ -40,7 +40,7 @@
         };
 
         pwd = builtins.getEnv "PWD";
-        projectName = "UPDATE_HERE";
+        projectName = "DoorQuest";
         unrealVersion = "5.4.1"; # UPDATE_HERE if needed (Editor Path)
         projectPath = "${pwd}/${projectName}.uproject";
       in {
@@ -54,7 +54,7 @@
               ];
               scripts = {
                 de-openue.exec = ''
-                  nvidia-offload openue ${unrealVersion} ${projectPath}
+                  openue ${unrealVersion} ${projectPath}
                 '';
 
                 de-uegen.exec = ''
