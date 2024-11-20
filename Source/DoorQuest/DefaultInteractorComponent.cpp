@@ -5,7 +5,6 @@
 #include "WorldCollision.h"
 
 UDefaultInteractorComponent::UDefaultInteractorComponent() {
-    PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UDefaultInteractorComponent::BeginPlay() {
@@ -17,8 +16,6 @@ void UDefaultInteractorComponent::TickComponent(
     ELevelTick TickType,
     FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-    FindNearbyInteractables();
 }
 
 void UDefaultInteractorComponent::FindNearbyInteractables() {
@@ -32,24 +29,66 @@ void UDefaultInteractorComponent::FindNearbyInteractables() {
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(GetOwner());
 
-    bool bHasOverlaps = GetWorld()->SweepMultiByChannel(
+    bool HasOverlaps = GetWorld()->SweepMultiByChannel(
         OverlapResults, OriginLocation, OriginLocation, FQuat::Identity,
-        ECC_WorldDynamic, Sphere, QueryParams);
-
-    if (bHasOverlaps) {
-        for (const FHitResult &Result : OverlapResults) {
-            AActor *OverlappedActor = Result.GetActor();
-            if (OverlappedActor &&
-                OverlappedActor->GetClass()->ImplementsInterface(
-                    UInteractable::StaticClass())) {
-                IInteractable::Execute_ReceiveInteraction(OverlappedActor,
-                                                          GetOwner());
-            }
-        }
-    }
+        DetectionCollisionChannel, Sphere, QueryParams);
 
     if (EnableDebugging) {
         DrawDebugSphere(GetWorld(), OriginLocation, DetectionOriginRadius, 32,
                         FColor::Green, false, 2.0f);
     }
+
+    if (!HasOverlaps) {
+        RemoveCurrentFocus();
+        return;
+    }
+
+    AActor *NearestInteractableActor = nullptr;
+    float NearestInteractableActorDistance = FLT_MAX;
+
+    for (const FHitResult &Result : OverlapResults) {
+        AActor *OverlappedActor = Result.GetActor();
+
+        UTIL_CONTINUE_IF(!OverlappedActor ||
+                         !OverlappedActor->GetClass()->ImplementsInterface(
+                             UInteractable::StaticClass()));
+
+        float CurrentInteractableActorDistance =
+            FVector::DistSquared(OverlappedActor->GetActorLocation(),
+                                 GetOwner()->GetActorLocation());
+
+        if (CurrentInteractableActorDistance <
+            NearestInteractableActorDistance) {
+            NearestInteractableActor = OverlappedActor;
+            NearestInteractableActorDistance = CurrentInteractableActorDistance;
+        }
+    }
+
+    FocusOn(NearestInteractableActor);
+}
+
+void UDefaultInteractorComponent::RemoveFocusedInteractableFromOverlapResults(
+    TArray<FHitResult> &OverlapResults) {
+    OverlapResults.RemoveAll([this](const FHitResult &OverlapResult) {
+        return OverlapResult.GetActor() == FocusedInteractableActor;
+    });
+}
+
+void UDefaultInteractorComponent::FocusOn(AActor *NewInteractableActor) {
+    UTIL_RETURN_IF(!NewInteractableActor ||
+                   FocusedInteractableActor == NewInteractableActor);
+
+    RemoveCurrentFocus();
+    IInteractable::Execute_ReceiveInteractionFocus(NewInteractableActor,
+                                                   GetOwner());
+    PreviousFocusedInteractableActor = FocusedInteractableActor;
+    FocusedInteractableActor = NewInteractableActor;
+}
+
+void UDefaultInteractorComponent::RemoveCurrentFocus() {
+    UTIL_RETURN_IF(!FocusedInteractableActor);
+
+    IInteractable::Execute_LoseInteractionFocus(FocusedInteractableActor,
+                                                GetOwner());
+    FocusedInteractableActor = nullptr;
 }

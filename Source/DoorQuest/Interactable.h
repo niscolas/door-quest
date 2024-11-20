@@ -15,5 +15,11 @@ class DOORQUEST_API IInteractable {
 
 public:
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+    void ReceiveInteractionFocus(AActor *InteractorActor);
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+    void LoseInteractionFocus(AActor *InteractorActor);
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
     void ReceiveInteraction(AActor *InteractorActor);
 };

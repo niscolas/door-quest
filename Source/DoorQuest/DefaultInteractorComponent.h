@@ -4,6 +4,7 @@
 #include "Components/SceneComponent.h"
 #include "CoreMinimal.h"
 #include "DoorQuest/Interactor.h"
+#include "Engine/EngineTypes.h"
 #include "Math/MathFwd.h"
 #include "DefaultInteractorComponent.generated.h"
 
@@ -16,6 +17,11 @@ public:
     UDefaultInteractorComponent();
 
 private:
+    UFUNCTION(BlueprintCallable,
+              Category = "Interaction",
+              meta = (AllowPrivateAccess))
+    void FindNearbyInteractables();
+
     virtual void BeginPlay() override;
 
     virtual void
@@ -23,7 +29,10 @@ private:
                   ELevelTick TickType,
                   FActorComponentTickFunction *ThisTickFunction) override;
 
-    void FindNearbyInteractables();
+    void RemoveFocusedInteractableFromOverlapResults(
+        TArray<FHitResult> &OverlapResults);
+    void FocusOn(AActor *InteractableActor);
+    void RemoveCurrentFocus();
 
     UPROPERTY(EditAnywhere,
               BlueprintReadWrite,
@@ -36,6 +45,24 @@ private:
               Category = "Interaction",
               meta = (AllowPrivateAccess))
     float DetectionOriginRadius = 100.f;
+
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Interaction",
+              meta = (AllowPrivateAccess))
+    TEnumAsByte<ECollisionChannel> DetectionCollisionChannel = ECC_WorldStatic;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Interaction|Debug",
+              meta = (AllowPrivateAccess))
+    AActor *FocusedInteractableActor;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Interaction|Debug",
+              meta = (AllowPrivateAccess))
+    AActor *PreviousFocusedInteractableActor;
 
     UPROPERTY(VisibleAnywhere,
               BlueprintReadOnly,
