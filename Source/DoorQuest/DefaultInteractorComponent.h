@@ -22,6 +22,11 @@ private:
               meta = (AllowPrivateAccess))
     void FindNearbyInteractables();
 
+    UFUNCTION(BlueprintCallable,
+              Category = "Interaction",
+              meta = (AllowPrivateAccess))
+    void Interact();
+
     virtual void BeginPlay() override;
 
     virtual void

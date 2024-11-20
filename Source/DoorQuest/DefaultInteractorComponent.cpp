@@ -64,7 +64,18 @@ void UDefaultInteractorComponent::FindNearbyInteractables() {
         }
     }
 
-    FocusOn(NearestInteractableActor);
+    if (!NearestInteractableActor) {
+        RemoveCurrentFocus();
+    } else {
+        FocusOn(NearestInteractableActor);
+    }
+}
+
+void UDefaultInteractorComponent::Interact() {
+    UTIL_RETURN_IF(!FocusedInteractableActor);
+
+    IInteractable::Execute_ReceiveInteraction(FocusedInteractableActor,
+                                              GetOwner());
 }
 
 void UDefaultInteractorComponent::RemoveFocusedInteractableFromOverlapResults(
