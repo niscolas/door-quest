@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Components/ActorComponent.h"
+#include "Containers/Map.h"
 #include "CoreMinimal.h"
 #include "DoorQuest/InventoryHolder.h"
 #include "DefaultInventoryHolderComponent.generated.h"
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryContentsChanged);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
@@ -35,6 +39,11 @@ private:
               Category = "Inventory",
               meta = (AllowPrivateAccess))
     TMap<UItemTypeDataAsset *, int> Inventory;
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Inventory",
+              meta = (AllowPrivateAccess))
+    FInventoryContentsChanged OnInventoryContentsChanged;
 
     virtual void BeginPlay() override;
 

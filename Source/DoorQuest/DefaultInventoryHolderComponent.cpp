@@ -34,6 +34,8 @@ bool UDefaultInventoryHolderComponent::AddAmountForItemType_Implementation(
         Inventory[ItemType] += Amount;
     }
 
+    OnInventoryContentsChanged.Broadcast();
+
     return true;
 }
 
@@ -45,5 +47,7 @@ bool UDefaultInventoryHolderComponent::DecreaseAmountForItemType_Implementation(
     }
 
     Inventory[ItemType] = FMath::Max(0, CurrentAmount - DecreaseAmount);
+    OnInventoryContentsChanged.Broadcast();
+
     return true;
 }
