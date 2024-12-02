@@ -1,4 +1,5 @@
 #include "DefaultInventoryHolderComponent.h"
+#include "DefaultInventorySlotData.h"
 #include "ItemTypeDataAsset.h"
 
 UDefaultInventoryHolderComponent::UDefaultInventoryHolderComponent() {
@@ -28,13 +29,14 @@ bool UDefaultInventoryHolderComponent::TryGetAmountForItemType_Implementation(
 bool UDefaultInventoryHolderComponent::AddAmountForItemType_Implementation(
     UItemTypeDataAsset *ItemType, int Amount) {
     int CurrentAmount;
-    if (!TryGetAmountForItemType(ItemType, CurrentAmount)) {
-        Inventory[ItemType] = Amount;
+
+    if (!TryGetAmountForItemType_Implementation(ItemType, CurrentAmount)) {
+        Inventory.Add(ItemType, Amount);
     } else {
         Inventory[ItemType] += Amount;
     }
 
-    OnInventoryContentsChanged.Broadcast();
+    InventoryContentsChanged.Broadcast();
 
     return true;
 }
@@ -42,12 +44,29 @@ bool UDefaultInventoryHolderComponent::AddAmountForItemType_Implementation(
 bool UDefaultInventoryHolderComponent::DecreaseAmountForItemType_Implementation(
     UItemTypeDataAsset *ItemType, int DecreaseAmount) {
     int CurrentAmount;
-    if (!TryGetAmountForItemType(ItemType, CurrentAmount)) {
+
+    if (!TryGetAmountForItemType_Implementation(ItemType, CurrentAmount)) {
         return false;
     }
 
     Inventory[ItemType] = FMath::Max(0, CurrentAmount - DecreaseAmount);
-    OnInventoryContentsChanged.Broadcast();
+    InventoryContentsChanged.Broadcast();
 
     return true;
+}
+
+TArray<UDefaultInventorySlotData *>
+UDefaultInventoryHolderComponent::GetInventorySlots() const {
+    TArray<UDefaultInventorySlotData *> Result;
+
+    for (auto InventorySlotKvp : Inventory) {
+        UDefaultInventorySlotData *NewInventorySlotData =
+            NewObject<UDefaultInventorySlotData>();
+        NewInventorySlotData->Icon = InventorySlotKvp.Key->GetIcon();
+        NewInventorySlotData->Quantity = InventorySlotKvp.Value;
+
+        Result.Add(NewInventorySlotData);
+    }
+
+    return Result;
 }

@@ -50,8 +50,7 @@ void UDefaultInteractorComponent::FindNearbyInteractables() {
         AActor *OverlappedActor = Result.GetActor();
 
         UTIL_CONTINUE_IF(!OverlappedActor ||
-                         !OverlappedActor->GetClass()->ImplementsInterface(
-                             UInteractable::StaticClass()));
+                         !OverlappedActor->Implements<UInteractable>());
 
         float CurrentInteractableActorDistance =
             FVector::DistSquared(OverlappedActor->GetActorLocation(),

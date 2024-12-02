@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Components/ActorComponent.h"
+#include "Containers/Array.h"
 #include "Containers/Map.h"
 #include "CoreMinimal.h"
+#include "DefaultInventorySlotData.h"
 #include "DoorQuest/InventoryHolder.h"
 #include "DefaultInventoryHolderComponent.generated.h"
 
@@ -33,6 +35,9 @@ public:
     DecreaseAmountForItemType_Implementation(UItemTypeDataAsset *ItemType,
                                              int DecreaseAmount) override;
 
+    UFUNCTION(BlueprintPure, Category = "Inventory")
+    TArray<UDefaultInventorySlotData *> GetInventorySlots() const;
+
 private:
     UPROPERTY(VisibleAnywhere,
               BlueprintReadOnly,
@@ -43,7 +48,7 @@ private:
     UPROPERTY(BlueprintAssignable,
               Category = "Inventory",
               meta = (AllowPrivateAccess))
-    FInventoryContentsChanged OnInventoryContentsChanged;
+    FInventoryContentsChanged InventoryContentsChanged;
 
     virtual void BeginPlay() override;
 

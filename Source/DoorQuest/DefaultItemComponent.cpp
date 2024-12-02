@@ -22,8 +22,7 @@ void UDefaultItemComponent::Pickup(AActor *PickupActor) {
     UTIL_IF_NULL_LOG_AND_RETURN(LogTemp, Error, TypeDataAsset);
     UTIL_IF_NULL_LOG_AND_RETURN(LogTemp, Error, PickupActor);
     UTIL_RETURN_IF(Quantity <= 0 ||
-                   !PickupActor->GetClass()->ImplementsInterface(
-                       UInventoryHolder::StaticClass()));
+                   !PickupActor->Implements<UInventoryHolder>());
 
     IInventoryHolder::Execute_AddAmountForItemType(PickupActor, TypeDataAsset,
                                                    Quantity);

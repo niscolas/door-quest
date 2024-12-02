@@ -1,10 +1,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "DefaultInventorySlotData.generated.h"
 
-struct DOORQUEST_API DefaultInventorySlotData {
-    DefaultInventorySlotData();
-    ~DefaultInventorySlotData();
+UCLASS(BlueprintType)
+
+class DOORQUEST_API UDefaultInventorySlotData : public UObject {
+    GENERATED_BODY()
+
+public:
+    UDefaultInventorySlotData(){};
+    UDefaultInventorySlotData(UTexture2D *PIcon, int PQuantity)
+        : Icon(PIcon), Quantity(PQuantity){};
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory Slot")
     UTexture2D *Icon;
