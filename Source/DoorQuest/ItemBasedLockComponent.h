@@ -7,6 +7,10 @@
 #include "ItemTypeDataAsset.h"
 #include "ItemBasedLockComponent.generated.h"
 
+UDELEGATE()
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FIsLockedChanged, bool, NewValue);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class DOORQUEST_API UItemBasedLockComponent : public UActorComponent {
@@ -39,5 +43,10 @@ private:
               BlueprintReadOnly,
               Category = "Item Requirements",
               meta = (AllowPrivateAccess))
-    bool IsLocked;
+    bool IsLocked = true;
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Item Requirements",
+              meta = (AllowPrivateAccess))
+    FIsLockedChanged IsLockedChanged;
 };

@@ -42,6 +42,8 @@ bool UItemBasedLockComponent::TryUnlock(AActor *InventoryHolderActor) {
     }
 
     IsLocked = false;
+    IsLockedChanged.Broadcast(IsLocked);
+
     return true;
 }
 
