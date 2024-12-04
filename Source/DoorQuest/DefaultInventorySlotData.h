@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemTypeDataAsset.h"
 #include "UObject/NoExportTypes.h"
 #include "DefaultInventorySlotData.generated.h"
 
@@ -16,6 +17,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory Slot")
     UTexture2D *Icon;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory Slot")
+    UItemTypeDataAsset *TypeDataAsset;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory Slot")
     int Quantity;

@@ -1,5 +1,6 @@
 #include "DefaultInventoryHolderComponent.h"
 #include "DefaultInventorySlotData.h"
+#include "InventoryHelper.h"
 #include "ItemTypeDataAsset.h"
 
 UDefaultInventoryHolderComponent::UDefaultInventoryHolderComponent() {
@@ -57,16 +58,5 @@ bool UDefaultInventoryHolderComponent::DecreaseAmountForItemType_Implementation(
 
 TArray<UDefaultInventorySlotData *>
 UDefaultInventoryHolderComponent::GetInventorySlots() const {
-    TArray<UDefaultInventorySlotData *> Result;
-
-    for (auto InventorySlotKvp : Inventory) {
-        UDefaultInventorySlotData *NewInventorySlotData =
-            NewObject<UDefaultInventorySlotData>();
-        NewInventorySlotData->Icon = InventorySlotKvp.Key->GetIcon();
-        NewInventorySlotData->Quantity = InventorySlotKvp.Value;
-
-        Result.Add(NewInventorySlotData);
-    }
-
-    return Result;
+    return CreateInventorySlotsFromItemMap(Inventory);
 }
