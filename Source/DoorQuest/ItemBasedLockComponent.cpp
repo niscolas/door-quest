@@ -36,6 +36,11 @@ bool UItemBasedLockComponent::TryUnlock(AActor *InventoryHolderActor) {
                  InventoryHolderActor, TypeDataAsset, ActualQuantity) ||
              ActualQuantity < RequiredQuantity),
             false);
+    }
+
+    for (auto RequirementKvp : RequirementsMap) {
+        UItemTypeDataAsset *TypeDataAsset = RequirementKvp.Key;
+        int RequiredQuantity = RequirementKvp.Value;
 
         IInventoryHolder::Execute_DecreaseAmountForItemType(
             InventoryHolderActor, TypeDataAsset, RequiredQuantity);
