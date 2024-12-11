@@ -4,9 +4,9 @@
 ## ✨ Features
 - Multiple types of pickable items (Keys, Jewels and Coins)
 - Inventory UI of items being carried at the top left
-- Multiple types of Doors (Hinge, Sliding, Automatic)
+- Multiple types of Doors (Hinge, Sliding, Automatic, Locked that shows necessary items in order to open it)
 - Input Action indicators for Door Interaction and Item Pickup
-- 2 Puzzle Levels that use the above-mentioned mechanics
+- A Puzzle Level that uses the mechanics mentioned above
 
 ## 🏗️ Architecture / Final Thoughts
 - Focus on not having an extensive Blueprint hierarchy and more on Reusable Code, Components and Composition
