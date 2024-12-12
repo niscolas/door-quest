@@ -33,3 +33,6 @@ https://github.com/user-attachments/assets/5ebf9166-c1ec-4a8e-a01f-e2f79f903cc3
 
   https://github.com/user-attachments/assets/f38faba5-df18-49ab-be58-c2ba6492ad11
 </details>
+
+# 📦 Assets Used
+All assets were either from Unreal's Third Person Template or from https://kenney.nl/assets, have a look, they're simply great!
