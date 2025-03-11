@@ -4,7 +4,6 @@
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
-    mach-nix.url = "mach-nix/3.5.0";
   };
 
   nixConfig = {
@@ -33,16 +32,10 @@
           config.allowUnfree = true;
         };
 
-        mach-nix-pkgs = inputs.mach-nix.lib."${system}".mkPython {
-          requirements = ''
-            ue4cli
-          '';
-        };
-
-        pwd = builtins.getEnv "PWD";
+        projectDirPath = builtins.getEnv "PWD";
         projectName = "DoorQuest";
-        unrealVersion = "5.4.1"; # UPDATE_HERE if needed (Editor Path)
-        projectPath = "${pwd}/${projectName}.uproject";
+        unrealEditorBaseDirPath = "/mnt/storage/unreal_editors/5.4.1";
+        uprojectFilePath = "${projectDirPath}/${projectName}.uproject";
       in {
         default = devenv.lib.mkShell {
           inherit inputs pkgs;
@@ -50,15 +43,30 @@
             {
               packages = with pkgs; [
                 clang-tools_16
-                mach-nix-pkgs
               ];
+
               scripts = {
-                de-openue.exec = ''
-                  openue ${unrealVersion} ${projectPath}
+                ueg.exec = ''
+                  ${unrealEditorBaseDirPath}/Engine/Build/BatchFiles/Linux/Build.sh \
+                  -mode=GenerateClangDatabase \
+                  -project=${uprojectFilePath} \
+                  -game -engine ${projectName}Editor Linux Development
+
+                  mv ${unrealEditorBaseDirPath}/compile_commands.json ${projectDirPath}
                 '';
 
-                de-uegen.exec = ''
-                  uegen ${unrealVersion} ${projectName} ${projectPath}
+                uehr.exec = ''
+                  randomNumber=$(echo $(( ( RANDOM % 1000 ) + 1000 )))
+
+                  ${unrealEditorBaseDirPath}/Engine/Build/BatchFiles/Linux/Build.sh \
+                  -ModuleWithSuffix=${projectName},''${randomNumber} \
+                  ${projectName}Editor \
+                  Linux Development \
+                  -Project="${uprojectFilePath}" \
+                  "${uprojectFilePath}"  \
+                  -IgnoreJunk \
+                  -progress \
+                  -waitmutex
                 '';
               };
             }
